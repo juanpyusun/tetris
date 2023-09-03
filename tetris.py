@@ -1,6 +1,12 @@
 from enum import Enum
+from abc import ABC, abstractmethod
 import keyboard
-
+"""
+simbolos usados en la pantalla
+▣  componente tetris en movimiento
+▢  pantalla sin ficha
+▦  componente tetris quieto  
+"""
 SCREEN_SIZE = 10
 
 class Movement(Enum):
@@ -9,6 +15,63 @@ class Movement(Enum):
     RIGHT = 3
     LEFT = 4
     ROTATE = 5
+# ----------------------------------------------------------------------------------------
+
+class Piece(ABC):
+    rotation_state = 0
+    
+    @abstractmethod
+    def rotation(self):
+        pass
+    
+    @abstractmethod
+    def form(self):
+        pass
+    
+class Square_Form(Piece):
+    """
+    ▣ ▣ ▢
+    ▣ ▣ ▢
+    """
+    rotations = {1:[(0,0),(0,0),(0,0),(0,0)]}
+
+class Line_Form(Piece):
+    """
+    ▣ ▣ ▣ ▣ 
+    ▢ ▢ ▢ ▢
+    """
+    rotations = {1:[(0,0),(-1,1),(-2,2),(-3,3)],
+                 2:[(0,0),(1,-1),(2,-2),(3,-3)]}
+
+class L_Form(Piece):
+    """
+    ▣ ▢
+    ▣ ▢
+    ▣ ▣
+    """
+    rotations = {1:[(1,1),(0,0),(-2,0),(-1,-1)],  
+                 2:[(0,1),(-1,0),(0,-1),(1,-2)],
+                 3:[(0,2),(1,1),(-1,1),(-2,0)], 
+                 4:[(0,1),(1,0),(2,-1),(1,-2)]}
+    
+class T_Form(Piece):
+    """
+    ▣ ▢
+    ▣ ▣
+    ▣ ▢
+    """
+    rotations = {1:[(0,2),(-1,1),(0,0),(-2,0)],
+                 2:[(0,2),(1,1),(2,0),(0,0)],
+                 3:[(2,0),(0,0),(1,-1),(0,-2)],
+                 4:[(0,0),(-2,0),(-1,-1),(0,-2)]}
+
+class S_Form(Piece):
+    """
+    ▣ ▢
+    ▣ ▣ 
+    ▢ ▣
+    """
+# ----------------------------------------------------------------------------------------
 
 def tetris():
     screen = [['■','▢','▢','▢','▢','▢','▢','▢','▢','▢'],
@@ -40,7 +103,8 @@ def tetris():
             elif event.name == "space":
                 screen, rotation = move_piece(screen, Movement.ROTATE, rotation)  
     
-    
+# ----------------------------------------------------------------------------------------
+
 def print_screen(screen: list):
     print("\nPantalla Tetris\n")
     for row in screen:
